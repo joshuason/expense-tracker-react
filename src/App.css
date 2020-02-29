@@ -1,0 +1,25 @@
+/*---[ D E F A U L T S ]---*/
+html {
+
+}
+
+body {
+
+}
+
+/*---[ S P E C I F I C S ]---*/
+#balance {
+
+}
+
+#history {
+
+}
+
+#transactions {
+
+}
+
+form > label, form > input {
+  display: block;
+}

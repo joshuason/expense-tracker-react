@@ -168,4 +168,5 @@ const isValidAmount = amount => {
       [ ] Add an edit function to edit an item in history
         - perhaps edit on the fly; ability to click on text, change it to an input, click off, save, update
       [ ] if input is valid, dynamically update balance, income and expenses
+      [ ] don't accept input value zero
 */

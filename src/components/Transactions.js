@@ -29,7 +29,7 @@ const Transactions = props => {
         </label>
         <input
           type="submit"
-          value="Add transaction"
+          value="Add"
           disabled={(showAmountError)}
         />
       </form>

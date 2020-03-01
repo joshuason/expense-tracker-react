@@ -1,19 +1,45 @@
 /*---[ D E F A U L T S ]---*/
 html {
-
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  font-family: arial, helvetica, sans-serif;
 }
 
 body {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
 
+#root {
+  max-width: 400px;
+  margin: 20px auto;
+  padding: 2rem;
+  background-color: #eee;
+  border-radius: 2rem;
+}
+
+h1, h2 {
+  text-align: center;
 }
 
 /*---[ S P E C I F I C S ]---*/
 #balance {
+  display: grid;
+  grid-template: repeat(2, 1fr) / repeat(2, 1fr);
+}
 
+#balance #bal {
+  grid-area: 1 / 1 / 2 / 3;
 }
 
 #history {
 
+}
+
+#history table {
+  background-color: #fff;
 }
 
 #transactions {
@@ -22,4 +48,9 @@ body {
 
 form > label, form > input {
   display: block;
+}
+
+input[type="submit"] {
+  float: right;
+  text-align: right;
 }

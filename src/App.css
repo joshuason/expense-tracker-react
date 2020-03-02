@@ -3,7 +3,8 @@ html {
   margin: 0;
   padding: 0;
   box-sizing: border-box;
-  font-family: arial, helvetica, sans-serif;
+  font-family: helvetica, arial, sans-serif;
+  font-weight: lighter;
 }
 
 body {
@@ -14,14 +15,15 @@ body {
 
 #root {
   max-width: 400px;
-  margin: 0px auto;
+  margin: 0 auto;
   padding: 2rem;
-  background-color: #eee;
-  border-radius: 2rem;
+  background-color: #ddd;
 }
 
 h1, h2 {
   text-align: left;
+  font-weight: lighter;
+  font-family: courier, monospace;
 }
 
 input {
@@ -32,29 +34,42 @@ input {
 #balance {
   display: grid;
   grid-template: repeat(2, 1fr) / repeat(2, 1fr);
+  grid-template-rows: 60% 40%;
+  background-color: #eee;
 }
 
 #balance p:first-child {
   grid-area: 1 / 1 / 2 / 3;
   font-size: 1.5rem;
+  margin: 1rem;
 }
 
-#history {
+#balance p {
+  margin: 0 0 1rem 1rem;
+}
 
+#history, #transactions {
+  margin-top: 3rem;
+  border-top: 1px solid #ccc;
 }
 
 #history table {
+  table-layout: fixed;
   width: 100%;
-  background-color: #fff;
+  background-color: #eee;
+  padding: 0.2rem 0;
 }
 
-#history table td:nth-child(n) {
-  max-width: 80%;
+#history table td:nth-child(1) {
+  width: 70%;
+  overflow: hidden;
+  padding-left: 1rem;
 }
 
-#history table td:nth-child(2n) {
+#history table td:nth-child(2) {
+  min-width: 30%;
   text-align: right;
-  border-left: 1px solid #ccc;
+  border-left: 1px solid #ddd;
   padding-right: 1rem;
 }
 
@@ -75,17 +90,25 @@ form > label {
 
 form > label > input {
   box-sizing: border-box;
+  background-color: #eee;
   width: 100%;
+  border: none;
+  padding:0.1rem;
 }
 
 input[type="submit"] {
+  font-family: courier, monospace;
   width: 100%;
   padding: 0;
   float: right;
-  text-align: right;
   cursor: pointer;
+  border: none;
 }
 
 input[disabled=""] {
   cursor: default;
+}
+
+::placeholder {
+  color: #b4b4b4;
 }

@@ -1,23 +1,28 @@
 import React from 'react';
 
 const History = props => {
-  const history = props.historyItems;
+  const { history } = props;
 
   return (
     <div id="history">
       <h2>History</h2>
       <table>
         <tbody>
-          {history.map((historyItem) => {
-            const { key, text, amount } = historyItem;
-            return (
-              <tr key={key}>
-                {/*<td>{historyItem.key}</td>*/}
-                <td>{text}</td>
-                <td style={rightBorder(amount)}>{amount}</td>
+          {(history.length)
+            ? history.map((historyItem) => {
+                const { key, text, amount } = historyItem;
+                return (
+                  <tr key={key}>
+                    {/*<td>{historyItem.key}</td>*/}
+                    <td>{text}</td>
+                    <td style={rightBorder(amount)}>{amount}</td>
+                  </tr>
+                );
+              })
+            : <tr>
+                <td>Nothing to show...</td>
               </tr>
-            );
-          })}
+          }
         </tbody>
       </table>
     </div>

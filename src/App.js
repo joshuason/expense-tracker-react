@@ -112,7 +112,7 @@ class App extends Component {
           expenses={this.state.expenses}
         />
         <History
-          historyItems={this.state.history}
+          history={this.state.history}
         />
         <Transactions
           form={this.state.form}

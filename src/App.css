@@ -14,7 +14,8 @@ body {
 }
 
 #root {
-  max-width: 400px;
+  box-sizing: border-box;
+  max-width: 450px;
   margin: 0 auto;
   padding: 2rem;
   background-color: #ddd;
@@ -111,4 +112,20 @@ input[disabled=""] {
 
 ::placeholder {
   color: #b4b4b4;
+}
+
+.hint {
+  color: red;
+}
+
+/* MEDIA QUERIES */
+@media screen and (max-width: 450px) {
+  #root {
+    box-sizing: border-box;
+    min-height: 100vh;
+  }
+
+  h1 {
+    font-size: 1.7rem;
+  }
 }

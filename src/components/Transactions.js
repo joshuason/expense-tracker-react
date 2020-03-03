@@ -1,12 +1,12 @@
 import React from 'react';
 
 const Transactions = props => {
-  const { form, handleSubmit, handleInputChange, showAmountError } = props;
+  const { form, handleSubmit, handleInputChange, hint } = props;
   const { amount, text } = form;
 
   return (
     <div id="transactions">
-      <h2>Add new transaction</h2>
+      <h2>New transaction</h2>
       <form onSubmit={handleSubmit}>
         <label>Text
           <input
@@ -16,6 +16,7 @@ const Transactions = props => {
             placeholder="enter text..."
             onChange={handleInputChange}
           />
+          {(hint.includes('text')) && <span className="hint">Invalid input</span>}
         </label>
         <label>Amount
           <input
@@ -26,13 +27,18 @@ const Transactions = props => {
             onChange={handleInputChange}
 //            style={(showAmountError) ? inStyleError : null}
           />
+          {(hint.includes('amount')) && <span className="hint">-, $, 0-9, .</span>}
         </label>
         <input
           type="submit"
           value="Add"
-          disabled={(showAmountError)}
         />
       </form>
+      {
+        (hint.includes('zero'))
+          && <span className="hint">Value of 0 is a bit redundant,
+          don't you think?</span>
+      }
     </div>
   )
 

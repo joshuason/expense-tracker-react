@@ -21,6 +21,7 @@ class App extends Component {
         isValid: false,
       },
       error: null,
+      hint: '',
     };
 
     this.handleSubmit = this.handleSubmit.bind(this);
@@ -31,8 +32,9 @@ class App extends Component {
     event.preventDefault();
     const newHistory = this.updateHistory();
     const { income, expenses, balance } = this.updateBalance(newHistory);
+    const { amount, text, isValid } = this.state.form;
 
-    if (this.state.form.isValid) {
+    if (isValid) {
       this.setState({
         form: {
           text: '',
@@ -43,10 +45,18 @@ class App extends Component {
         income: isValidAmount(income),
         expenses: isValidAmount(expenses),
         balance: isValidAmount(balance),
+        hint: '',
       });
       console.log('Transaction Added');
     } else {
-      console.log('Form is invalid');
+      (isValidAmount(amount))
+        ? (isValidAmount(amount) !== parseFloat(0).toFixed(2))
+          ? !(isValidText(text))
+            && this.setState({ hint: 'text' })
+          : this.setState({ hint: 'zero' })
+        : (isValidText(text))
+          ? this.setState({ hint: 'amount' })
+          : this.setState({ hint: 'text amount' });
     }
   }
 
@@ -58,11 +68,13 @@ class App extends Component {
     (name === 'text')
       ? form.text = value
       : form.amount = value;
-
+/*
     if (!(form.amount === '') && !isValidAmount(form.amount) && (form.amount.length > 2)) {
       console.log('Error: Invalid input:', form.amount, isValidAmount(form.amount));
-    }
-    form.isValid = isValidAmount(form.amount) !== false;
+    }*/
+    form.isValid = (isValidAmount(form.amount))
+      && (isValidAmount(form.amount) !== parseFloat(0).toFixed(2))
+      && (isValidText(form.text));
     (form.text === 'error') && this.setState({ error: 'error', });
 
     this.setState({
@@ -118,7 +130,7 @@ class App extends Component {
           form={this.state.form}
           handleSubmit={this.handleSubmit}
           handleInputChange={this.handleInputChange}
-          showAmountError={!this.state.form.isValid}
+          hint={this.state.hint}
         />
       </div>
     );
@@ -144,6 +156,11 @@ const isValidAmount = amount => {
   }
 }
 
+const isValidText = text => {
+  // if text is empty or just spaces
+  if ((!text) || (!text.replace(/ /g, '').length)) return false;
+  return true;
+}
 /*
 
   TODOS:
@@ -153,20 +170,26 @@ const isValidAmount = amount => {
     [x] Work on balance (24/02/20)
       [x] Work out income
       [x] Work out expenses
-    [ ] Finishing touches
+    [x] Finishing touches
       [x] Form verification
         [x] Validate input in amount field (25/02/20)
           [e] Show error on page -- not an alert lol
       [x] Error handling
-      [ ] Styling (CSS)
+      [x] Styling (CSS) (02/03/20)
+        [-] Make it responsive
     [ ] Extras ~ [e]
-      [e] Show error on page -- not an alert lol
-      [ ] Add $ where appropriate
+      [x] Show error on page -- not an alert lol
+      [x] Validate input in text field (03/03/20)
+      [x] Show hint if input is not valid and form submit attempted (03/03/20)
+        [ ] Make button shake to indicate invalid input and highlight
+      [.] Add $ where appropriate
+      [x] don't accept input value zero (03/03/20)
       [ ] After pressing [enter] from the amount field, move the cursor to the text field
-      [ ] Validate input in text field
       [ ] Add a delete function to remove items from history
       [ ] Add an edit function to edit an item in history
         - perhaps edit on the fly; ability to click on text, change it to an input, click off, save, update
       [ ] if input is valid, dynamically update balance, income and expenses
-      [ ] don't accept input value zero
+    [ ] Fork - make the td rows editable
+      [ ] Remove add new transaction header
+      [ ] Just have input boxes at the bottom
 */

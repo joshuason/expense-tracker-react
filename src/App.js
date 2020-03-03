@@ -210,7 +210,7 @@ const isValidText = text => {
       [.] Add $ where appropriate
       [x] don't accept input value zero (03/03/20)
       [x] After pressing [enter] from the amount field, move the cursor to the text field (04/03/20)
-      [x] Add a delete function to remove items from history
+      [x] Add a delete function to remove items from history (04/03/20)
       [ ] Add an edit function to edit an item in history
         [f] perhaps edit on the fly; ability to click on text, change it to an input, click off, save, update
     [ ] Fork ~[f] - make the td rows editable

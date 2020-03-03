@@ -1,7 +1,7 @@
 import React from 'react';
 
 const History = props => {
-  const { history, handleDelete } = props;
+  const { history, handleDelete, handleEdit } = props;
 
   return (
     <div id="history">
@@ -19,6 +19,11 @@ const History = props => {
                     <td>
                       <button onClick={() => handleDelete(key)}>
                       x
+                      </button>
+                    </td>
+                    <td>
+                      <button onClick={() => handleEdit(key)}>
+                      e
                       </button>
                     </td>
                   </tr>

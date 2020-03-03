@@ -28,6 +28,7 @@ class App extends Component {
     this.handleSubmit = this.handleSubmit.bind(this);
     this.handleInputChange = this.handleInputChange.bind(this);
     this.handleDelete = this.handleDelete.bind(this);
+    this.handleEdit = this.handleEdit.bind(this);
   }
 
   componentDidMount() {
@@ -90,11 +91,13 @@ class App extends Component {
   }
 
   handleDelete(i) {
-    console.log(`Deleting ${i}`);
     const { history } = this.state;
     const newHistory = history.filter((historyItem) => historyItem.key !== i);
-    console.log(newHistory);
     this.setState({ history: newHistory });
+  }
+
+  handleEdit(i) {
+    console.log(`Editing ${i}`);
   }
 
   textFocus = () => {
@@ -145,6 +148,7 @@ class App extends Component {
         <History
           history={this.state.history}
           handleDelete={(i) => this.handleDelete(i)}
+          handleEdit={i => this.handleEdit(i)}
         />
         <Transactions
           ref={this.ref}
@@ -206,11 +210,11 @@ const isValidText = text => {
       [.] Add $ where appropriate
       [x] don't accept input value zero (03/03/20)
       [x] After pressing [enter] from the amount field, move the cursor to the text field (04/03/20)
-      [ ] Add a delete function to remove items from history
+      [x] Add a delete function to remove items from history
       [ ] Add an edit function to edit an item in history
         [f] perhaps edit on the fly; ability to click on text, change it to an input, click off, save, update
-      [ ] if input is valid, dynamically update balance, income and expenses
     [ ] Fork ~[f] - make the td rows editable
       [ ] Remove add new transaction header
       [ ] Just have input boxes at the bottom
+      [ ] if input is valid, dynamically update balance, income and expenses
 */

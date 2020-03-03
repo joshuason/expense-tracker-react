@@ -1,6 +1,6 @@
 import React from 'react';
 
-const Transactions = props => {
+const Transactions = React.forwardRef((props, ref) => {
   const { form, handleSubmit, handleInputChange, hint } = props;
   const { amount, text } = form;
 
@@ -10,6 +10,7 @@ const Transactions = props => {
       <form onSubmit={handleSubmit}>
         <label>Text
           <input
+            ref={ref}
             type="text"
             name="text"
             value={text}
@@ -42,7 +43,7 @@ const Transactions = props => {
     </div>
   )
 
-}
+});
 /*
 const inStyleError = {
   border: "red solid 2px",

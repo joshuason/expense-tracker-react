@@ -9,6 +9,7 @@ import Balance from './components/Balance';
 class App extends Component {
   constructor(props) {
     super(props);
+    this.ref = React.createRef();
 
     this.state = {
       balance: 0,
@@ -26,6 +27,10 @@ class App extends Component {
 
     this.handleSubmit = this.handleSubmit.bind(this);
     this.handleInputChange = this.handleInputChange.bind(this);
+  }
+
+  componentDidMount() {
+    this.textFocus();
   }
 
   handleSubmit(event) {
@@ -47,6 +52,7 @@ class App extends Component {
         balance: isValidAmount(balance),
         hint: '',
       });
+      this.textFocus();
       console.log('Transaction Added');
     } else {
       (isValidAmount(amount))
@@ -80,6 +86,10 @@ class App extends Component {
     this.setState({
       form
     });
+  }
+
+  textFocus = () => {
+    this.ref.current.focus();
   }
 
   updateHistory = ({ text, amount } = this.state.form) => {
@@ -127,6 +137,7 @@ class App extends Component {
           history={this.state.history}
         />
         <Transactions
+          ref={this.ref}
           form={this.state.form}
           handleSubmit={this.handleSubmit}
           handleInputChange={this.handleInputChange}
@@ -184,7 +195,7 @@ const isValidText = text => {
         [ ] Make button shake to indicate invalid input and highlight
       [.] Add $ where appropriate
       [x] don't accept input value zero (03/03/20)
-      [ ] After pressing [enter] from the amount field, move the cursor to the text field
+      [x] After pressing [enter] from the amount field, move the cursor to the text field (04/03/20)
       [ ] Add a delete function to remove items from history
       [ ] Add an edit function to edit an item in history
         - perhaps edit on the fly; ability to click on text, change it to an input, click off, save, update

@@ -17,9 +17,9 @@ Initially, I had completed the tic-tac-toe tutorial on ReactJS website and read 
 
 ### To do
 
-[ ] Enhance UI/make it pretty (CSS).
-*Optional*
-[ ] Extra additional features (see App.js comments at bottom).
-[ ] Implement the ErrorBoundary component.
-*Next step*
-[ ] Watch the tutorial and implement it with Hooks and Context API.
+☐ Enhance UI/make it pretty (CSS).  
+*Optional*  
+☐ Extra additional features (see App.js comments at bottom).  
+☐ Implement the ErrorBoundary component.  
+*Next step*  
+☐ Watch the tutorial and implement it with Hooks and Context API.  

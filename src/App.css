@@ -61,17 +61,37 @@ input {
   padding: 0.2rem 0;
 }
 
-#history table td:nth-child(1) {
-  width: 70%;
+#history tr td:nth-child(1) {
+  width: 60%;
   overflow: hidden;
   padding-left: 1rem;
 }
 
-#history table td:nth-child(2) {
-  min-width: 30%;
+#history tr td:nth-child(2) {
+  min-width: 20%;
   text-align: right;
   border-left: 1px solid #ddd;
   padding-right: 1rem;
+}
+
+#history tr td:nth-child(3) {
+  display: none;
+}
+
+#history td:nth-child(4) {
+  width: 5%;
+}
+
+td button {
+  width: 100%;
+  box-sizing: border-box;
+  padding: 0;
+  border: 1px solid grey;
+  border-radius: 2px;
+}
+
+td button:hover, td button:active {
+  background-color: #0000ff;
 }
 
 #transactions {

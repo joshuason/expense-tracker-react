@@ -76,10 +76,7 @@ class App extends Component {
     (name === 'text')
       ? form.text = value
       : form.amount = value;
-/*
-    if (!(form.amount === '') && !isValidAmount(form.amount) && (form.amount.length > 2)) {
-      console.log('Error: Invalid input:', form.amount, isValidAmount(form.amount));
-    }*/
+
     form.isValid = (isValidAmount(form.amount))
       && (isValidAmount(form.amount) !== parseFloat(0).toFixed(2))
       && (isValidText(form.text));
@@ -93,6 +90,7 @@ class App extends Component {
   handleDelete(i) {
     const { history } = this.state;
     const newHistory = history.filter((historyItem) => historyItem.key !== i);
+    this.updateBalance(newHistory);
     this.setState({ history: newHistory });
   }
 
@@ -125,6 +123,11 @@ class App extends Component {
     });
 
     let balance = income + expenses;
+    this.setState({
+      income: parseFloat(income).toFixed(2),
+      expenses: parseFloat(expenses).toFixed(2),
+      balance: parseFloat(balance).toFixed(2),
+    });
     return { income, expenses, balance };
   }
 
@@ -136,7 +139,7 @@ class App extends Component {
         </div>
       );
     }
-
+    
     return (
       <div>
         <h1>Expense Tracker</h1>

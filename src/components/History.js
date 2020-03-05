@@ -17,13 +17,13 @@ const History = props => {
                     <td>{text}</td>
                     <td style={rightBorder(amount)}>{amount}</td>
                     <td>
-                      <button onClick={() => handleDelete(key)}>
-                      x
+                      <button onClick={() => handleEdit(key)}>
+                      e
                       </button>
                     </td>
                     <td>
-                      <button onClick={() => handleEdit(key)}>
-                      e
+                      <button onClick={() => handleDelete(key)}>
+                      x
                       </button>
                     </td>
                   </tr>

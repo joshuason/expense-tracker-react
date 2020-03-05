@@ -29,6 +29,10 @@ class App extends Component {
     this.handleInputChange = this.handleInputChange.bind(this);
     this.handleDelete = this.handleDelete.bind(this);
     this.handleEdit = this.handleEdit.bind(this);
+
+    this.updateHistory = this.updateHistory.bind(this);
+    this.updateBalance = this.updateBalance.bind(this);
+    this.clearForm = this.clearForm.bind(this);
   }
 
   componentDidMount() {
@@ -37,23 +41,11 @@ class App extends Component {
 
   handleSubmit(event) {
     event.preventDefault();
-    const newHistory = this.updateHistory();
-    const { income, expenses, balance } = this.updateBalance(newHistory);
-    const { amount, text, isValid } = this.state.form;
+    const { amount, text } = this.state.form;
 
-    if (isValid) {
-      this.setState({
-        form: {
-          text: '',
-          amount: '',
-          isValid: false,
-        },
-        history: newHistory,
-        income: isValidAmount(income),
-        expenses: isValidAmount(expenses),
-        balance: isValidAmount(balance),
-        hint: '',
-      });
+    if (this.state.form.isValid) {
+      this.updateHistory();
+      this.clearForm();
       this.textFocus();
       console.log('Transaction Added');
     } else {
@@ -83,15 +75,16 @@ class App extends Component {
     (form.text === 'error') && this.setState({ error: 'error', });
 
     this.setState({
-      form
+      form,
     });
   }
 
   handleDelete(i) {
-    const { history } = this.state;
-    const newHistory = history.filter((historyItem) => historyItem.key !== i);
-    this.updateBalance(newHistory);
-    this.setState({ history: newHistory });
+    // const { history } = this.state;
+    //const newHistory = history.filter((historyItem) => historyItem.key !== i);
+    // this.setState({ history: history.filter((historyItem) => historyItem.key !== i) },
+    //   this.updateBalance);
+    this.updateHistory(i);
   }
 
   handleEdit(i) {
@@ -102,22 +95,28 @@ class App extends Component {
     this.ref.current.focus();
   }
 
-  updateHistory = ({ text, amount } = this.state.form) => {
+  updateHistory(i = null) {
     const { history } = this.state;
-
-    const newHistory = history.concat([{
-      key: history.length,
-      text,
-      amount: (isValidAmount(amount)) ? isValidAmount(amount) : '',
-    }]);
-    return newHistory;
+    const { text, amount } = this.state.form;
+    console.log(i);
+    const newHistory = (i !== null)
+      ? history.filter((historyItem) => historyItem.key !== i)
+      : history.concat([{
+          key: history.length,
+          text: isValidText(text),
+          amount: isValidAmount(amount),
+        }]);
+    this.setState({
+      history: newHistory,
+    },this.updateBalance);
   }
 
-  updateBalance = (newHistory) => {
+  updateBalance() {
+    const { history } = this.state;
     let income = 0;
     let expenses = 0;
 
-    newHistory.map(item => {
+    history.map(item => {
       parseFloat(item.amount) > 0 ? (income += parseFloat(item.amount)) : (expenses += parseFloat(item.amount))
       return item;
     });
@@ -128,7 +127,17 @@ class App extends Component {
       expenses: parseFloat(expenses).toFixed(2),
       balance: parseFloat(balance).toFixed(2),
     });
-    return { income, expenses, balance };
+  }
+
+  clearForm() {
+    this.setState({
+      form: {
+        text: '',
+        amount: '',
+        isValid: false,
+      },
+      hint: '',
+    });
   }
 
   render() {
@@ -139,7 +148,7 @@ class App extends Component {
         </div>
       );
     }
-    
+
     return (
       <div>
         <h1>Expense Tracker</h1>
@@ -187,7 +196,7 @@ const isValidAmount = amount => {
 const isValidText = text => {
   // if text is empty or just spaces
   if ((!text) || (!text.replace(/ /g, '').length)) return false;
-  return true;
+  return text;
 }
 /*
 

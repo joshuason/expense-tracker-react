@@ -23,6 +23,13 @@ class App extends Component {
       },
       error: null,
       hint: '',
+      editForm: {
+        row: null,
+        text: '',
+        amount: '',
+        isValid: false,
+      },
+      nextKey: 0,
     };
 
     this.handleSubmit = this.handleSubmit.bind(this);
@@ -39,18 +46,46 @@ class App extends Component {
     this.textFocus();
   }
 
+  componentDidUpdate(prevProps, prevState) {
+    const { form, editForm } = this.state;
+    if ((form.amount !== prevState.form.amount) || (form.text !== prevState.form.text)) {
+      const { text, amount } = form;
+      this.setState({
+        form: {
+          ...form,
+          isValid: (isValidText(text)) && (isValidAmount(amount)),
+        }
+      });
+    }
+    if ((editForm.amount !== prevState.editForm.amount) || editForm.text !== prevState.editForm.text) {
+      const { text, amount } = editForm;
+      this.setState({
+        editForm: {
+          ...editForm,
+          isValid: isValidText(text) && isValidAmount(amount),
+        }
+      });
+    }
+  }
+
   handleSubmit(event) {
-    event.preventDefault();
+    const { editForm, form } = this.state;
     const { amount, text } = this.state.form;
 
-    if (this.state.form.isValid) {
+    if (editForm.row !== null) {
+      this.updateHistory(editForm.row);
+      this.clearEditForm();
+      return;
+    }
+
+    if (form.isValid && parseFloat(amount).toFixed(2) !== parseFloat(0).toFixed(2)) {
       this.updateHistory();
       this.clearForm();
       this.textFocus();
       console.log('Transaction Added');
     } else {
       (isValidAmount(amount))
-        ? (isValidAmount(amount) !== parseFloat(0).toFixed(2))
+        ? (parseFloat(amount).toFixed(2) !== parseFloat(0).toFixed(2))
           ? !(isValidText(text))
             && this.setState({ hint: 'text' })
           : this.setState({ hint: 'zero' })
@@ -58,25 +93,30 @@ class App extends Component {
           ? this.setState({ hint: 'amount' })
           : this.setState({ hint: 'text amount' });
     }
+    event.preventDefault();
   }
 
   handleInputChange(event) {
     const { target } = event;
     const { name, value } = target;
 
-    const form = this.state.form;
-    (name === 'text')
-      ? form.text = value
-      : form.amount = value;
+    const { editForm, form } = this.state;
 
-    form.isValid = (isValidAmount(form.amount))
-      && (isValidAmount(form.amount) !== parseFloat(0).toFixed(2))
-      && (isValidText(form.text));
-    (form.text === 'error') && this.setState({ error: 'error', });
-
-    this.setState({
-      form,
-    });
+    if (editForm.row !== null) {
+      this.setState({
+        editForm: {
+          ...editForm,
+          [name]: value,
+        }
+      });
+    } else {
+      this.setState({
+        form: {
+          ...form,
+          [name]: value,
+        }
+      });
+    }
   }
 
   handleDelete(i) {
@@ -89,6 +129,12 @@ class App extends Component {
 
   handleEdit(i) {
     console.log(`Editing ${i}`);
+    this.setState({
+      editForm: {
+        ...this.state.editForm,
+        row: i,
+      },
+    });
   }
 
   textFocus = () => {
@@ -96,17 +142,24 @@ class App extends Component {
   }
 
   updateHistory(i = null) {
-    const { history } = this.state;
+    const { history, nextKey, editForm } = this.state;
     const { text, amount } = this.state.form;
-    console.log(i);
     const newHistory = (i !== null)
-      ? history.filter((historyItem) => historyItem.key !== i)
+      ? history.filter(historyItem => historyItem.key !== i)
       : history.concat([{
-          key: history.length,
-          text: isValidText(text),
-          amount: isValidAmount(amount),
+          key: this.state.nextKey,
+          text: isValidText(text) && text,
+          amount: isValidAmount(amount) && parseFloat(amount).toFixed(2),
         }]);
+    if (editForm.row !== null) {
+      newHistory.splice(editForm.row, 0, {
+        key: editForm.row,
+        text: editForm.text,
+        amount: editForm.amount,
+      });
+    }
     this.setState({
+      nextKey: (i === null) ? nextKey+1 : nextKey,
       history: newHistory,
     },this.updateBalance);
   }
@@ -140,6 +193,14 @@ class App extends Component {
     });
   }
 
+  clearEditForm = () => {
+    this.setState({
+      editForm: {
+        row: null,
+      },
+    });
+  }
+
   render() {
     if (this.state.error) {
       return (
@@ -159,16 +220,22 @@ class App extends Component {
         />
         <History
           history={this.state.history}
-          handleDelete={(i) => this.handleDelete(i)}
+          handleDelete={i => this.handleDelete(i)}
           handleEdit={i => this.handleEdit(i)}
-        />
-        <Transactions
-          ref={this.ref}
-          form={this.state.form}
+          editForm={this.state.editForm}
+          handleInputChange={val => this.handleInputChange(val)}
           handleSubmit={this.handleSubmit}
-          handleInputChange={this.handleInputChange}
-          hint={this.state.hint}
+          clearEditForm={this.clearEditForm}
         />
+        {(this.state.editForm.row === null)
+          && <Transactions
+              ref={this.ref}
+              form={this.state.form}
+              handleSubmit={this.handleSubmit}
+              handleInputChange={this.handleInputChange}
+              hint={this.state.hint}
+            />
+        }
       </div>
     );
   }
@@ -177,6 +244,7 @@ class App extends Component {
 export default App;
 
 const isValidAmount = amount => {
+  if (!amount) return false;
   let val = amount.toString();
   if (val.includes('$')) {
     let index = val.indexOf('$');
@@ -186,9 +254,9 @@ const isValidAmount = amount => {
     val = val.substring(0, index) + val.substring(index + 1, val.length);
   }
 
-  if (Number(val) === parseFloat(val))
-    return parseFloat(val).toFixed(2);
-  else {
+  if (Number(val) === parseFloat(val)) {
+    return true;
+  } else {
     return false;
   }
 }
@@ -196,7 +264,7 @@ const isValidAmount = amount => {
 const isValidText = text => {
   // if text is empty or just spaces
   if ((!text) || (!text.replace(/ /g, '').length)) return false;
-  return text;
+  return true;
 }
 /*
 
@@ -223,10 +291,14 @@ const isValidText = text => {
       [x] don't accept input value zero (03/03/20)
       [x] After pressing [enter] from the amount field, move the cursor to the text field (04/03/20)
       [x] Add a delete function to remove items from history (04/03/20)
-      [ ] Add an edit function to edit an item in history
+      [x] Add an edit function to edit an item in history (06/03/20)
         [f] perhaps edit on the fly; ability to click on text, change it to an input, click off, save, update
     [ ] Fork ~[f] - make the td rows editable
       [ ] Remove add new transaction header
       [ ] Just have input boxes at the bottom
       [ ] if input is valid, dynamically update balance, income and expenses
+
+    [ ] BUGS:
+      [x] Key collision when removing and adding Transactions in history
+      [ ] History throws warning (A component is changing an uncontrolled input of type text to be controlled. Input elements should not switch from uncontrolled to controlled (or vice versa). Decide between using a controlled or uncontrolled input element for the lifetime of the component. More info: https://fb.me/react-controlled-components)
 */

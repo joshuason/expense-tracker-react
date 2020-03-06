@@ -1,7 +1,15 @@
 import React from 'react';
 
 const History = props => {
-  const { history, handleDelete, handleEdit } = props;
+  const {
+    history,
+    handleDelete,
+    handleEdit,
+    editForm,
+    handleInputChange,
+    handleSubmit,
+    clearEditForm,
+  } = props;
 
   return (
     <div id="history">
@@ -11,19 +19,47 @@ const History = props => {
           {(history.length)
             ? history.map((historyItem) => {
                 const { key, text, amount } = historyItem;
+                if (editForm.row === key) {
+                  return (
+                    <tr key={key}>
+                      <td>
+                        <form onSubmit={handleSubmit}>
+                          <input
+                            type="text"
+                            name="text"
+                            value={editForm.text}
+                            onChange={handleInputChange}
+                          />
+                          <input
+                            type="text"
+                            name="amount"
+                            value={editForm.amount}
+                            onChange={handleInputChange}
+                          />
+                          <input
+                            type="submit"
+                            value="✓"
+                          />
+                          <button onClick={clearEditForm}>
+                            ✕
+                          </button>
+                        </form>
+                      </td>
+                    </tr>
+                  )
+                }
                 return (
                   <tr key={key}>
-                    {/*<td>{historyItem.key}</td>*/}
                     <td>{text}</td>
                     <td style={rightBorder(amount)}>{amount}</td>
                     <td>
                       <button onClick={() => handleEdit(key)}>
-                      e
+                        e
                       </button>
                     </td>
                     <td>
                       <button onClick={() => handleDelete(key)}>
-                      x
+                        x
                       </button>
                     </td>
                   </tr>

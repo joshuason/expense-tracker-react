@@ -75,7 +75,7 @@ input {
 }
 
 #history tr td:nth-child(3) {
-  display: none;
+  width: 5%;
 }
 
 #history td:nth-child(4) {

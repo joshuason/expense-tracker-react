@@ -24,7 +24,7 @@ class App extends Component {
       error: null,
       hint: '',
       editForm: {
-        row: null,
+        trkey: null,
         text: '',
         amount: '',
         isValid: false,
@@ -40,6 +40,7 @@ class App extends Component {
     this.updateHistory = this.updateHistory.bind(this);
     this.updateBalance = this.updateBalance.bind(this);
     this.clearForm = this.clearForm.bind(this);
+    this.clearEditForm = this.clearEditForm.bind(this);
   }
 
   componentDidMount() {
@@ -62,38 +63,44 @@ class App extends Component {
       this.setState({
         editForm: {
           ...editForm,
-          isValid: isValidText(text) && isValidAmount(amount),
+          isValid: (isValidText(text)) && (isValidAmount(amount)),
         }
       });
     }
   }
 
   handleSubmit(event) {
-    const { editForm, form } = this.state;
-    const { amount, text } = this.state.form;
-
-    if (editForm.row !== null) {
-      this.updateHistory(editForm.row);
-      this.clearEditForm();
-      return;
-    }
-
-    if (form.isValid && parseFloat(amount).toFixed(2) !== parseFloat(0).toFixed(2)) {
-      this.updateHistory();
-      this.clearForm();
-      this.textFocus();
-      console.log('Transaction Added');
-    } else {
-      (isValidAmount(amount))
-        ? (parseFloat(amount).toFixed(2) !== parseFloat(0).toFixed(2))
-          ? !(isValidText(text))
-            && this.setState({ hint: 'text' })
-          : this.setState({ hint: 'zero' })
-        : (isValidText(text))
-          ? this.setState({ hint: 'amount' })
-          : this.setState({ hint: 'text amount' });
-    }
     event.preventDefault();
+    const { editForm, form } = this.state;
+
+
+    if (editForm.trkey !== null) {
+      const { amount } = editForm;
+      // validate editForm inputs
+      if (editForm.isValid && parseFloat(amount).toFixed(2) !== parseFloat(0).toFixed(2)) {
+        // then update history
+        this.updateHistory(editForm.trkey);
+        this.clearEditForm();
+      }
+    } else {
+      const { amount, text } = form;
+      if (form.isValid && parseFloat(amount).toFixed(2) !== parseFloat(0).toFixed(2)) {
+        this.updateHistory();
+        this.clearForm();
+        this.textFocus();
+        console.log('Transaction Added');
+      } else {
+        // if invalid, show appropriate hint
+        (isValidAmount(amount))
+          ? (parseFloat(amount).toFixed(2) !== parseFloat(0).toFixed(2))
+            ? !(isValidText(text))
+              && this.setState({ hint: 'text' })
+            : this.setState({ hint: 'zero' })
+          : (isValidText(text))
+            ? this.setState({ hint: 'amount' })
+            : this.setState({ hint: 'text amount' });
+      }
+    }
   }
 
   handleInputChange(event) {
@@ -102,7 +109,7 @@ class App extends Component {
 
     const { editForm, form } = this.state;
 
-    if (editForm.row !== null) {
+    if (editForm.trkey !== null) {
       this.setState({
         editForm: {
           ...editForm,
@@ -119,20 +126,21 @@ class App extends Component {
     }
   }
 
-  handleDelete(i) {
-    // const { history } = this.state;
-    //const newHistory = history.filter((historyItem) => historyItem.key !== i);
-    // this.setState({ history: history.filter((historyItem) => historyItem.key !== i) },
-    //   this.updateBalance);
-    this.updateHistory(i);
+  handleDelete(key) {
+    this.updateHistory(key);
   }
 
-  handleEdit(i) {
-    console.log(`Editing ${i}`);
+  handleEdit(key) {
+    console.log(`Editing ${key}`);
+    const targetHistoryItem = this.state.history.filter(historyItem =>
+      historyItem.key === key)[0]; // filter should only return one object
+
     this.setState({
       editForm: {
         ...this.state.editForm,
-        row: i,
+        text: targetHistoryItem.text,
+        amount: targetHistoryItem.amount,
+        trkey: key,
       },
     });
   }
@@ -141,25 +149,39 @@ class App extends Component {
     this.ref.current.focus();
   }
 
-  updateHistory(i = null) {
+  updateHistory(key = null) {
     const { history, nextKey, editForm } = this.state;
     const { text, amount } = this.state.form;
-    const newHistory = (i !== null)
-      ? history.filter(historyItem => historyItem.key !== i)
+
+    // if i is valid, return history without historyItem.key === i
+    // or return history + new history item
+    let history_index = 0;
+    const newHistory = (key !== null)
+      ? history.filter((historyItem, index) => {
+        if (historyItem.key === key) {
+          history_index = index;
+        }
+        return historyItem.key !== key
+        })
       : history.concat([{
           key: this.state.nextKey,
-          text: isValidText(text) && text,
-          amount: isValidAmount(amount) && parseFloat(amount).toFixed(2),
+          text,
+          amount: parseFloat(amount).toFixed(2),
         }]);
-    if (editForm.row !== null) {
-      newHistory.splice(editForm.row, 0, {
-        key: editForm.row,
+
+    // if editing was enabled, add valid edit to its original position
+    // &&-conditional allows deletion whilst editing another item
+    if (editForm.trkey !== null && editForm.trkey === key) {
+      newHistory.splice(history_index, 0, {
+        key: editForm.trkey,
         text: editForm.text,
-        amount: editForm.amount,
+        amount: parseFloat(editForm.amount).toFixed(2),
       });
     }
+
+    // finally set history state
     this.setState({
-      nextKey: (i === null) ? nextKey+1 : nextKey,
+      nextKey: (key === null) ? nextKey+1 : nextKey,
       history: newHistory,
     },this.updateBalance);
   }
@@ -193,10 +215,13 @@ class App extends Component {
     });
   }
 
-  clearEditForm = () => {
+  clearEditForm() {
     this.setState({
       editForm: {
-        row: null,
+        trkey: null,
+        text: '',
+        amount: '',
+        isValid: false,
       },
     });
   }
@@ -223,11 +248,11 @@ class App extends Component {
           handleDelete={i => this.handleDelete(i)}
           handleEdit={i => this.handleEdit(i)}
           editForm={this.state.editForm}
-          handleInputChange={val => this.handleInputChange(val)}
+          handleInputChange={this.handleInputChange}
           handleSubmit={this.handleSubmit}
           clearEditForm={this.clearEditForm}
         />
-        {(this.state.editForm.row === null)
+        {(this.state.editForm.trkey === null)
           && <Transactions
               ref={this.ref}
               form={this.state.form}
@@ -292,6 +317,9 @@ const isValidText = text => {
       [x] After pressing [enter] from the amount field, move the cursor to the text field (04/03/20)
       [x] Add a delete function to remove items from history (04/03/20)
       [x] Add an edit function to edit an item in history (06/03/20)
+        [x] Validate the edit form
+        [x] Fix update history // position is incorrect
+        [x] Disable transaction fields and submit during edit mode
         [f] perhaps edit on the fly; ability to click on text, change it to an input, click off, save, update
     [ ] Fork ~[f] - make the td rows editable
       [ ] Remove add new transaction header
@@ -299,6 +327,8 @@ const isValidText = text => {
       [ ] if input is valid, dynamically update balance, income and expenses
 
     [ ] BUGS:
-      [x] Key collision when removing and adding Transactions in history
+      [x] Key duplicates when removing and adding Transactions in history
+      [x] When in edit mode, you can delete another object resulting in key duplicates
+        - updateHistory was causing unintentional results
       [ ] History throws warning (A component is changing an uncontrolled input of type text to be controlled. Input elements should not switch from uncontrolled to controlled (or vice versa). Decide between using a controlled or uncontrolled input element for the lifetime of the component. More info: https://fb.me/react-controlled-components)
 */

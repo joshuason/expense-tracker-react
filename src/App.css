@@ -29,6 +29,8 @@ h1, h2 {
 
 input {
   font-size: inherit;
+  box-sizing: border-box;
+  width: 100%;
 }
 
 /*---[ S P E C I F I C S ]---*/
@@ -68,19 +70,52 @@ input {
 }
 
 #history tr td:nth-child(2) {
-  min-width: 20%;
+  width: 20%;
   text-align: right;
   border-left: 1px solid #ddd;
   padding-right: 1rem;
 }
 
-#history tr td:nth-child(3) {
+#history tr td:nth-child(3),
+#history tr td:nth-child(4) {
   width: 5%;
 }
 
-#history td:nth-child(4) {
-  width: 5%;
+.editform {
+  width: 100%;
+  display: grid;
+  grid-template-columns: 60% 20% 5% 5%;
+  grid-template-rows: 27px;
 }
+.editform input[type="text"] {
+  font: inherit;
+}
+.editform input[type="submit"] {
+  width: 100%;
+  box-sizing: border-box;
+  padding: 0;
+  border: 1px solid grey;
+  border-radius: 2px;
+}
+.editform input:nth-child(1) {
+  grid-area: 1 / 1 / span 1 / span 1;
+}
+.editform input:nth-child(2) {
+  grid-area: 1 / 2 / span 1 / span 1;
+}
+.editform input:nth-child(3) {
+  grid-area: 1 / 3 / span 1 / span 1;
+}
+.editform input:nth-child(4) {
+  grid-area: 1 / 4 / span 1 / span 1;
+}
+
+/*
+#history tr td form input:nth-child(1)
+#history tr td form input:nth-child(2)
+#history tr td form input:nth-child(3)
+#history tr td form input:nth-child(4)
+*/
 
 td button {
   width: 100%;
@@ -109,7 +144,7 @@ form > label {
   display: block;
 }
 
-form > label > input {
+input[type="text"] {
   box-sizing: border-box;
   background-color: #eee;
   width: 100%;

@@ -19,11 +19,11 @@ const History = props => {
           {(history.length)
             ? history.map((historyItem) => {
                 const { key, text, amount } = historyItem;
-                if (editForm.row === key) {
+                if (editForm.trkey === key) {
                   return (
                     <tr key={key}>
                       <td>
-                        <form onSubmit={handleSubmit}>
+                        <form onSubmit={handleSubmit} className="editform">
                           <input
                             type="text"
                             name="text"

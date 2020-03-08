@@ -28,7 +28,7 @@ const Transactions = React.forwardRef((props, ref) => {
             onChange={handleInputChange}
 //            style={(showAmountError) ? inStyleError : null}
           />
-          {(hint.includes('amount')) && <span className="hint">-, $, 0-9, .</span>}
+          {(hint.includes('amount')) && <span className="hint">Invalid amount</span>}
         </label>
         <input
           type="submit"

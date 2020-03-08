@@ -84,19 +84,33 @@ input {
 .editform {
   width: 100%;
   display: grid;
-  grid-template-columns: 60% 20% 5% 5%;
-  grid-template-rows: 27px;
+  grid-template-columns: 63% 23% 5% 5%;
+  grid-column-gap: 1%;
+  grid-template-rows: 18.5px;
 }
 .editform input[type="text"] {
   font: inherit;
+  padding: 0;
 }
-.editform input[type="submit"] {
+
+.editform input[type="text"]:nth-child(2) {
+  font: inherit;
+  text-align: right;
+  padding-right: 1rem;
+  border-left: 1px solid #ddd;
+  border-right: 3px solid #0000ff;
+}
+
+.editform input[type="submit"], .editform button {
   width: 100%;
+  height: 15.5px;
+  font-size: 10px;
   box-sizing: border-box;
   padding: 0;
   border: 1px solid grey;
   border-radius: 2px;
 }
+
 .editform input:nth-child(1) {
   grid-area: 1 / 1 / span 1 / span 1;
 }

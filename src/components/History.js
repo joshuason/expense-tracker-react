@@ -21,7 +21,7 @@ const History = props => {
                 const { key, text, amount } = historyItem;
                 if (editForm.trkey === key) {
                   return (
-                    <tr key={key}>
+                    <tr key={key} className="editItem">
                       <td>
                         <form onSubmit={handleSubmit} className="editform">
                           <input
@@ -49,7 +49,7 @@ const History = props => {
                   )
                 }
                 return (
-                  <tr key={key}>
+                  <tr key={key} className="historyItem">
                     <td>{text}</td>
                     <td style={rightBorder(amount)}>{amount}</td>
                     <td>

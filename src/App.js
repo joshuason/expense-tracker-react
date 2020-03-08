@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import './App.css';
+import './styles/App.css';
 
 import Transactions from './components/Transactions';
 import History from './components/History';
@@ -81,6 +81,7 @@ class App extends Component {
         // then update history
         this.updateHistory(editForm.trkey);
         this.clearEditForm();
+        this.textFocus();
       }
     } else {
       const { amount, text } = form;
@@ -131,7 +132,6 @@ class App extends Component {
   }
 
   handleEdit(key) {
-    console.log(`Editing ${key}`);
     const targetHistoryItem = this.state.history.filter(historyItem =>
       historyItem.key === key)[0]; // filter should only return one object
 
@@ -269,7 +269,9 @@ class App extends Component {
 export default App;
 
 const isValidAmount = amount => {
+  /*
   if (!amount) return false;
+  /*
   let val = amount.toString();
   if (val.includes('$')) {
     let index = val.indexOf('$');
@@ -279,17 +281,18 @@ const isValidAmount = amount => {
     val = val.substring(0, index) + val.substring(index + 1, val.length);
   }
 
-  if (Number(val) === parseFloat(val)) {
+  if (Number(amount) === parseFloat(amount)) {
     return true;
   } else {
     return false;
   }
+  */
+  return ((Number(amount) === parseFloat(amount)) ? true : false);
 }
 
 const isValidText = text => {
   // if text is empty or just spaces
-  if ((!text) || (!text.replace(/ /g, '').length)) return false;
-  return true;
+  return (((!text) || (!text.replace(/ /g, '').length)) ? false : true);
 }
 /*
 

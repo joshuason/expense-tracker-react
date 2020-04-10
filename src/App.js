@@ -41,6 +41,7 @@ class App extends Component {
     this.updateBalance = this.updateBalance.bind(this);
     this.clearForm = this.clearForm.bind(this);
     this.clearEditForm = this.clearEditForm.bind(this);
+    this.textFocus = this.textFocus.bind(this);
   }
 
   componentDidMount() {
@@ -145,7 +146,8 @@ class App extends Component {
     });
   }
 
-  textFocus = () => {
+  textFocus() {
+    if (!this.ref.current) return null;
     this.ref.current.focus();
   }
 
